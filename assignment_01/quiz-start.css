@@ -1,0 +1,152 @@
+body {
+    font-family: "Sarabun", sans-serif;
+    background-image: url('./img/solar-system.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.quiz-container {
+    background-color: rgba(240, 248, 255, 0.85);
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 1200px;
+    padding: 4rem 1.5rem;
+    text-align: center;
+}
+
+.progress-bar-quiz {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.progress-bar-quiz div {
+    flex: 1;
+    height: 8px;
+    background-color: #e5e5e5;
+    border-radius: 0;
+    position: relative;
+}
+
+.progress-bar-quiz div.active {
+    background-color: rgb(9, 9, 118);
+}
+
+.progress-bar-quiz span {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #333333;
+}
+
+.question {
+    font-size: 1.25rem;
+    color: #333333;
+    margin: 2rem 0;
+    font-weight: 500;
+}
+
+.options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.options button {
+    flex: 1 1 calc(50% - 20px);
+    max-width: 200px;
+    padding: 0.6rem 1rem;
+    background-color: #e5e5e5;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #333333;
+    transition: background-color 0.3s;
+
+}
+
+.options button.selected {
+    background-color: rgb(9, 9, 118);
+    color: white;
+}
+
+#nextButton {
+    padding: 10px 20px;
+    background-color: rgb(52, 255, 150);
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 1rem;
+}
+
+#nextButton:disabled {
+    background-color: rgb(52, 155, 112);
+    cursor: not-allowed;
+}
+
+.nbtn {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Modal styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s;
+}
+.modal.active {
+    visibility: visible;
+    opacity: 1;
+}
+.modal-content {
+    width: auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+.modal-content h2 {
+    margin-bottom: 10px;
+}
+.modal-content button {
+    padding: 10px 20px;
+    background-color: rgb(9, 9, 118);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: "Sarabun", sans-serif;
+    font-style: normal;
+} 
+
+@media screen and (max-width: 555px) {
+    .progress-bar-quiz{
+        display: none;
+    }
+    
+}

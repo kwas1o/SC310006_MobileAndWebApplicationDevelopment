@@ -1,0 +1,53 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Sarabun", sans-serif;
+  background-image: url("./img/cartoon-space-bg.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  font-style: normal;
+  height: 100vh;
+}
+
+.quiz-description {
+  width: 80%;
+  background-color: rgba(240, 248, 255, 0.9);
+  border-radius: 1.5rem;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  margin-top: 10%;
+  margin-bottom: 10%;
+}
+
+.quiz-description h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #000;
+}
+
+.quiz-description p {
+  font-size: 1.2rem;
+  color: #000;
+  font-weight: 300;
+  line-height: 1.8;
+}
+
+.start-button {
+  font-size: 1.2rem;
+  padding: 0.8rem 2rem;
+  border-radius: 1.5rem;
+  background-color: rgb(9, 9, 118);
+  color: white;
+  border: none;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.start-button:hover {
+  background-color: rgb(6, 6, 80);
+}
+
+a {
+  text-decoration: none;
+}
