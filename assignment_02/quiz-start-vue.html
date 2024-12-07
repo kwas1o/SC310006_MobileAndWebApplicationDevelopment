@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>20-Question Quiz</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.js"></script>
+    <!-- Vuetify 3 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.1.1/dist/vuetify.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/vuetify@3.1.1/dist/vuetify.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="quiz-start-vue.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Antonio:wght@100..700&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Taviraj:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <v-app>
+        <v-container v-if="!quizCompleted && questions.length > 0">
+          <!-- Timer Section -->
+           <v-div class="quiz-container">
+            <v-row row="12" class="timer" justify="center" align="center">
+                <v-col class="text-center" cols="12">
+                   {{ Math.floor(timer / 60) }}:{{ String(timer %
+                  60).padStart(2, '0') }}
+                </v-col>
+              </v-row>
+    
+              <!-- Question Section -->
+              <v-row class="question" justify="center" align="center">
+                <v-col class="text-center">
+                  <h3>{{ currentQuestion.title }}</h3>
+                  <ul class="options">
+                    <li v-for="(option, index) in currentQuestion.options" :key="index">
+                      <input
+                        type="radio"
+                        :id="'option-' + index"
+                        :value="index + 1"
+                        v-model="userAnswers[currentQuestionIndex]"
+                      />
+                      <label :for="'option-' + index">{{ option }}</label>
+                    </li>
+                  </ul>
+                </v-col>
+              </v-row>
+    
+              <!-- Next Button Section -->
+              <v-row justify="center" align="center">
+                <v-col class="text-center">
+                  <v-btn color="primary" @click="nextQuestion">ข้อถัดไป</v-btn>
+                </v-col>
+              </v-row>
+           </v-div>
+
+        </v-container>
+
+        <!-- Quiz Completed Section -->
+        <v-container  v-else>
+          <v-row class="done" justify="center" align="center">
+            <v-col class="text-center">
+              <h2>Quiz Completed</h2>
+              <p>คะแนนที่คุณทำได้: {{ score }}/{{ questions.length }}</p>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-app>
+    </div>
+
+    <script>
+      const app = Vue.createApp({
+        data() {
+          return {
+            questions: [],
+            currentQuestionIndex: 0,
+            userAnswers: [],
+            timer: 300,
+            quizCompleted: false,
+          };
+        },
+        computed: {
+          currentQuestion() {
+            return this.questions[this.currentQuestionIndex];
+          },
+          score() {
+            console.log("User Answers: ", this.userAnswers);
+            console.log("Questions: ", this.questions);
+            return this.questions.reduce((score, question, index) => {
+              return (
+                score + (this.userAnswers[index] === question.answer ? 1 : 0)
+              );
+            }, 0);
+          },
+        },
+        methods: {
+          fetchQuestions() {
+            fetch("quiz.json")
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Failed to load questions");
+                }
+                return response.json();
+              })
+              .then((data) => {
+                this.questions = data;
+              })
+              .catch((error) => {
+                console.error(error);
+                alert("Error loading quiz data. Please check your JSON file.");
+              });
+          },
+          nextQuestion() {
+            if (this.userAnswers[this.currentQuestionIndex] !== undefined) {
+              if (this.currentQuestionIndex < this.questions.length - 1) {
+                this.currentQuestionIndex++;
+              } else {
+                this.completeQuiz();
+              }
+            } else {
+              alert("คุณยังไม่ได้เลือกคำตอบ!");
+            }
+          },
+          completeQuiz() {
+            this.quizCompleted = true;
+          },
+          startTimer() {
+            const timerInterval = setInterval(() => {
+              if (this.timer > 0) {
+                this.timer--;
+              } else {
+                clearInterval(timerInterval);
+                this.completeQuiz();
+              }
+            }, 1000);
+          },
+        },
+        mounted() {
+          this.fetchQuestions();
+          this.startTimer();
+        },
+      });
+
+      app.use(Vuetify);
+      app.mount("#app");
+    </script>
+  </body>
+</html>

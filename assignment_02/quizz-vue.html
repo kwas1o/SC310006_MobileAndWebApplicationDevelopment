@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My First Vue Page</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@3.7.4/dist/vuetify.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.7.4/dist/vuetify.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Sarabun", sans-serif;
+    }
+    .v-container {
+      height: 100vh;
+      display: flex;
+    }
+    .content {
+      /* background-color: #f9f9f9; */
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .content h1 {
+      margin-bottom: 10px;
+      font-size: 2.5rem;
+    }
+    .content p {
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+    }
+    .v-btn {
+      margin-top: 2rem;
+      background-color: #007BFF;
+      color: white;
+    }
+    .v-btn:hover {
+      background-color: #0056b3;
+    }
+    .image {
+      background-color: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-container>
+        <v-row>
+          <!-- Left Content Section -->
+          <v-col cols="12" md="12" class="content">
+            <h1>{{ header }}</h1>
+            <p>{{ description }}</p>
+            <v-btn @click="handleClick" color="primary" elevation="2">
+              {{ buttonText }}
+            </v-btn>
+          </v-col>
+          
+        </v-row>
+      </v-container>
+    </v-app>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+    const { createVuetify } = Vuetify;
+
+    const vuetify = createVuetify();
+
+    createApp({
+      data() {
+        return {
+          header: 'ฉันรักประวัติศาสตร์ไทย',
+          description: 'ข้อสอบนี้เป็นข้อสอบเกี่ยวกับ ประวัติศาสตร์ไทย ซึ่งจะทดสอบความรู้เกี่ยวกับเหตุการณ์สำคัญในประวัติศาสตร์ไทย ตั้งแต่ยุคสุโขทัยจนถึงกรุงรัตนโกสินทร์ เนื้อหาครอบคลุมถึงบุคคลสำคัญ เช่น พระมหากษัตริย์ และเหตุการณ์สำคัญในแต่ละยุคสมัย',
+          buttonText: 'เริ่มทำข้อสอบเลย',
+          imageSrc: 'https://images.dmc.tv/www/images/articles/dhamma.com/611103.1.jpg'
+        };
+      },
+      methods: {
+        handleClick() {
+          window.location.href = 'quiz-start-vue.html';
+        }
+      }
+    }).use(vuetify).mount('#app');
+  </script>
+</body>
+</html>
