@@ -1,0 +1,93 @@
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        z-index: -1; 
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Iframe for Skybox -->
+    <iframe
+      src="https://skybox.blockadelabs.com/e/3a9cdad7636a1c5949135358bf26bb37"
+      allow="fullscreen"
+    ></iframe>
+
+    <!-- A-Frame Scene -->
+    <a-scene>
+      <!-- Kidboy Model -->
+      <a-entity
+        gltf-model="url(Kidboy1.glb)"
+        position="0 -2.5 -2"
+        scale="5 5 5"
+        rotation="0 0 0"
+      ></a-entity>
+
+      <!-- First Beautiful Text Box with Animation -->
+      <a-text
+        value="Watthana Saimlaem"
+        position="0 4 -3"
+        scale="3 3 3"
+        color="#fff563"
+        align="center"
+        font="mozillavr"
+        width="4"
+        letter-spacing="3"
+        line-height="6"
+        shadow="true"
+        opacity="1"
+        cast-shadow="true"
+        receive-shadow="true"
+        animation__scale="property: scale; to: 3.5 3.5 3.5; dur: 2000; loop: true; dir: alternate"
+      ></a-text>
+
+      <!-- Second Text Box with Animation -->
+      <a-text
+        value="653380280-0"
+        position="0 3.4 -3"
+        scale="2 2 2"
+        color="#8491BD"
+        align="center"
+        font="mozillavr"
+        width="3"
+        letter-spacing="3"
+        line-height="6"
+        shadow="true"
+        opacity="1"
+        cast-shadow="true"
+        receive-shadow="true"
+        animation__scale="property: scale; to: 2.5 2.5 2.5; dur: 2000; loop: true; dir: alternate"
+      ></a-text>
+
+      <!-- Third Text Box with Animation -->
+      <a-text
+        value="Enjoy my world"
+        position="0 3.1 -3"
+        scale="2 2 2"
+        color="#C5BAFF"
+        align="center"
+        font="mozillavr"
+        width="4"
+        letter-spacing="2"
+        line-height="6"
+        shadow="true"
+        opacity="1"
+        cast-shadow="true"
+        receive-shadow="true"
+        animation__scale="property: scale; to: 3 3 3; dur: 2000; loop: true; dir: alternate"
+      ></a-text>
+    </a-scene>
+  </body>
+</html>
