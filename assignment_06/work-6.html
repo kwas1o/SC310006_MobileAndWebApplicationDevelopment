@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/react/umd/react.production.min.js" crossorigin></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/react-bootstrap@next/dist/react-bootstrap.min.js" crossorigin></script>
+
+    <!-- Add Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+</head>
+
+<body>
+    <div id="myapp" class="container p-4"></div>
+    <script type="text/babel">
+        const RB = ReactBootstrap;
+        const { Alert, Card, Button, Table, Form, Modal } = ReactBootstrap;
+
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJoKwj-H7Pq9wsNdMPONKLsQxm43EbphA",
+            authDomain: "web2567-b2251.firebaseapp.com",
+            projectId: "web2567-b2251",
+            storageBucket: "web2567-b2251.firebasestorage.app",
+            messagingSenderId: "816979067027",
+            appId: "1:816979067027:web:1b9f6a5099575a78430d66",
+            measurementId: "G-PL4MP79DVS"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        class App extends React.Component {
+            title = (
+                <Alert variant="info">
+                    <b>Work6 :</b> Firebase
+                </Alert>
+            );
+
+            footer = (
+                <div>
+                    By Watthana Saimlaem 653380280-0 <br />
+                    College of Computing, Khon Kaen University
+                </div>
+            );
+
+            state = {
+                scene: 0,
+                students: [],
+                showModal: false,
+                currentStudent: null,
+                isLoggedIn: false,
+                errorMessage: ''
+            };
+
+            componentDidMount() {
+                this.loadStudents();
+                // Add auth state listener
+                auth.onAuthStateChanged((user) => {
+                    this.setState({ isLoggedIn: !!user });
+                });
+            }
+
+            loadStudents = async () => {
+                try {
+                    const snapshot = await db.collection("students").get();
+                    const students = [];
+                    snapshot.forEach((doc) => {
+                        students.push({ id: doc.id, ...doc.data() });
+                    });
+                    this.setState({ students });
+                } catch (error) {
+                    console.error("Error loading students:", error);
+                }
+            };
+
+            handleGoogleLogin = async () => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                try {
+                    await auth.signInWithPopup(provider);
+                    this.setState({ errorMessage: '', scene: 1 });
+                } catch (error) {
+                    this.setState({ errorMessage: 'Google login failed.' });
+                }
+            };
+
+            handleLogout = async () => {
+                try {
+                    await auth.signOut();
+                    this.setState({ scene: 0 });
+                } catch (error) {
+                    console.error("Error signing out:", error);
+                }
+            };
+
+            handleSave = async (formData) => {
+                try {
+                    if (this.state.currentStudent) {
+                        await db.collection("students").doc(this.state.currentStudent.id).update(formData);
+                    } else {
+                        const newDocRef = db.collection("students").doc(formData.id.toString()); 
+                        await newDocRef.set(formData);
+                    }
+                    this.loadStudents(); 
+                    this.setState({ showModal: false, currentStudent: null }); 
+                } catch (error) {
+                    console.error("Error saving student:", error);
+                }
+            };
+
+            handleDelete = async (studentId) => {
+                try {
+                    await db.collection("students").doc(studentId).delete();
+                    this.loadStudents();
+                } catch (error) {
+                    console.error("Error deleting student:", error);
+                }
+            };
+
+            renderLoginForm = () => (
+                <div className="text-center">
+                    {this.state.errorMessage && (
+                        <Alert variant="danger">{this.state.errorMessage}</Alert>
+                    )}
+                    <Button variant="danger" onClick={this.handleGoogleLogin}>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                            alt="Google"
+                            style={{ width: '20px', marginRight: '10px' }} />
+                        Login with Google
+                    </Button>
+                </div>
+            );
+
+            renderStudentTable = () => (
+                <div>
+                    <Button variant="primary" className="mb-3" onClick={() => this.setState({ showModal: true })}>
+                        Add Student
+                    </Button>
+                    <Button variant="danger" className="mb-3 ms-2" onClick={this.handleLogout}>
+                        Logout
+                    </Button>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>รหัส</th>
+                                <th>คำนำหน้า</th>
+                                <th>ชื่อ</th>
+                                <th>สกุล</th>
+                                <th>email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.students.map((student) => (
+                                <tr key={student.id}>
+                                    <td>{student.id}</td>
+                                    <td>{student.title}</td>
+                                    <td>{student.fname}</td>
+                                    <td>{student.lname}</td>
+                                    <td>{student.email}</td>
+                                    <td>
+                                        <Button
+                                            variant="warning"
+                                            size="sm"
+                                            onClick={() => this.setState({ showModal: true, currentStudent: student })}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            size="sm"
+                                            className="ms-2"
+                                            onClick={() => this.handleDelete(student.id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                    <StudentModal
+                        show={this.state.showModal}
+                        onHide={() => this.setState({ showModal: false, currentStudent: null })}
+                        onSave={this.handleSave}
+                        student={this.state.currentStudent}
+                    />
+                </div>
+            );
+
+            render() {
+                return (
+                    <Card>
+                        <Card.Header>{this.title}</Card.Header>
+                        <Card.Body>
+                            {this.state.isLoggedIn ? this.renderStudentTable() : this.renderLoginForm()}
+                        </Card.Body>
+                        <Card.Footer>{this.footer}</Card.Footer>
+                    </Card>
+                );
+            }
+        }
+
+        class StudentModal extends React.Component {
+            state = {
+                id: '',
+                title: '',
+                fname: '',
+                lname: '',
+                email: ''
+            };
+
+            componentDidMount() {
+                if (this.props.student) {
+                    this.setState({ ...this.props.student });
+                }
+            }
+
+            componentDidUpdate(prevProps) {
+                if (prevProps.student !== this.props.student) {
+                    this.setState(this.props.student || {
+                        id: '',
+                        title: '',
+                        fname: '',
+                        lname: '',
+                        email: ''
+                    });
+                }
+            }
+
+            handleSubmit = (e) => {
+                e.preventDefault();
+                this.props.onSave(this.state);
+            };
+
+            render() {
+                return (
+                    <Modal show={this.props.show} onHide={this.props.onHide}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>{this.props.student ? 'Edit Student' : 'Add Student'}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form onSubmit={this.handleSubmit}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>รหัส</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        value={this.state.id}
+                                        onChange={(e) => this.setState({ id: e.target.value })}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>คำนำหน้า</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        value={this.state.title}
+                                        onChange={(e) => this.setState({ title: e.target.value })}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>ชื่อ</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        value={this.state.fname}
+                                        onChange={(e) => this.setState({ fname: e.target.value })}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>สกุล</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        value={this.state.lname}
+                                        onChange={(e) => this.setState({ lname: e.target.value })}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Email</Form.Label>
+                                    <Form.Control
+                                        type="email"
+                                        value={this.state.email}
+                                        onChange={(e) => this.setState({ email: e.target.value })}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Button type="submit">Save</Button>
+                            </Form>
+                        </Modal.Body>
+                    </Modal>
+                );
+            }
+        }
+
+        const container = document.getElementById("myapp");
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
